@@ -155,6 +155,7 @@ function solid_points(a, dx, dy)
 	if solid_area(a.x+dx, a.y+dy,
 				a.w, a.h,0) then
 				print("you hit it you bastard!")
+				mset(a.x+dx, a.y+dy, 2)
 				return true
 	end
 	return false
