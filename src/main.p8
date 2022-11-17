@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 38
 __lua__
--- brick breaker 
+-- brick wrecker
 -- by sri.
 
 actor = {} -- all actors
