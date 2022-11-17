@@ -40,7 +40,7 @@ function _init()
 	pl.frames=4
 	
 	-- make ball
-	local ball = make_actor(12,2,2)
+	local ball = make_actor(12,2,10)
 	ball.dx=-0.1
 	ball.dy=0.15
 	ball.friction=0
@@ -154,7 +154,9 @@ end
 function solid_points(a, dx, dy)
 	if solid_area(a.x+dx, a.y+dy,
 				a.w, a.h,0) then
+				print("you hit it you bastard!")
 				return true
+	end
 	return false
 end
 
@@ -189,6 +191,7 @@ function move_actor(a)
 	else
 		a.dx *= -a.bounce
 	end
+	
 
 	-- ditto for y
 
@@ -216,6 +219,46 @@ function move_actor(a)
 	
 end
 
+function move_ball(ball)
+
+	-- only move actor along x
+	-- if the resulting position
+	-- will not overlap with a wall
+
+	if not solid_points(a, a.dx, 0) then
+		a.x += a.dx
+	else
+		a.dx *= -a.bounce
+	end
+	
+
+	-- ditto for y
+
+	if not solid_points(a, 0, a.dy) then
+		a.y += a.dy
+	else
+		a.dy *= -a.bounce
+	end
+	
+	-- apply friction
+	-- (comment for no inertia)
+	
+	a.dx *= (1-a.friction)
+	a.dy *= (1-a.friction)
+	
+	-- advance one frame every
+	-- time actor moves 1/4 of
+	-- a tile
+	
+	a.frame += abs(a.dx) * 4
+	a.frame += abs(a.dy) * 4
+	a.frame %= a.frames
+
+	a.t += 1
+	
+end
+
+
 function control_player(pl)
 
 	accel = 0.05
@@ -229,6 +272,7 @@ end
 function _update()
 	control_player(pl)
 	foreach(actor, move_actor)
+	move_ball(ball)
 end
 
 function draw_actor(a)
