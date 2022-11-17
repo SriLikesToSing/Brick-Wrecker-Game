@@ -1,10 +1,11 @@
 pico-8 cartridge // http://www.pico-8.com
 version 38
 __lua__
--- brick wrecker
+-- brick breaker 
 -- by sri.
 
 actor = {} -- all actors
+bricks=0
 
 -- make an actor
 -- and add to global collection
@@ -51,14 +52,14 @@ end
 -- map, true if there is wall
 -- there.
 
-function solid(x, y)
+function solid(x, y, flag)
 	-- grab the cel value
 	val=mget(x, y)
 	
 	-- check if flag 1 is set (the
 	-- orange toggle button in the 
 	-- sprite editor)
-	return fget(val, 1)
+	return fget(val, flag)
 	
 end
 
@@ -69,12 +70,12 @@ end
 --(this version only works for
 --actors less than one tile big)
 
-function solid_area(x,y,w,h)
+function solid_area(x,y,w,h,flag)
 	return 
-		solid(x-w,y-h) or
-		solid(x+w,y-h) or
-		solid(x-w,y+h) or
-		solid(x+w,y+h)
+		solid(x-w,y-h,flag) or
+		solid(x+w,y-h,flag) or
+		solid(x-w,y+h,flag) or
+		solid(x+w,y+h,flag)
 end
 
 
@@ -145,9 +146,16 @@ end
 -- checks both walls and actors
 function solid_a(a, dx, dy)
 	if solid_area(a.x+dx,a.y+dy,
-				a.w,a.h) then
+				a.w,a.h,1) then
 				return true end
 	return solid_actor(a, dx, dy) 
+end
+
+function solid_points(a, dx, dy)
+	if solid_area(a.x+dx, a.y+dy,
+				a.w, a.h,0) then
+				return true
+	return false
 end
 
 -- return true when something
