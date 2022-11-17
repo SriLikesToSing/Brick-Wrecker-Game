@@ -40,7 +40,7 @@ function _init()
 	pl.frames=4
 	
 	-- make ball
-	local ball = make_actor(12,2,10)
+	local ball = make_actor(12,8,10)
 	ball.dx=-0.1
 	ball.dy=0.15
 	ball.friction=0
@@ -220,6 +220,8 @@ function move_actor(a)
 	
 end
 
+
+
 function move_ball(ball)
 
 	-- only move actor along x
@@ -230,6 +232,7 @@ function move_ball(ball)
 		a.x += a.dx
 	else
 		a.dx *= -a.bounce
+		brick+=1
 		sfx(1)
 	end
 	
@@ -240,6 +243,7 @@ function move_ball(ball)
 		a.y += a.dy
 	else
 		a.dy *= -a.bounce
+		brick+=1
 		sfx(1)
 	end
 	
@@ -260,7 +264,6 @@ function move_ball(ball)
 	a.t += 1
 	
 end
-
 
 function control_player(pl)
 
