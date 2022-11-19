@@ -5,9 +5,10 @@ __lua__
 -- by sri.
 
 actor = {} -- all actors
-bricks=89
+bricks=0
 is_playing = true
 is_won = false
+intro_screen = true
 
 -- make an actor
 -- and add to global collection
@@ -44,7 +45,7 @@ function _init()
 	-- make ball
 	local ball = make_actor(12,8,10)
 	ball.dx=-0.1
-	ball.dy=0.15
+	ball.dy=0.1
 	ball.friction=0
 	ball.bounce=1
 	
@@ -162,8 +163,8 @@ function solid_points(a, dx, dy)
 				mset(a.x, a.y, 2)
 				mset(a.x+a.w, a.y+a.h, 2)
 				
-				
-				if bricks == 90 then
+				bricks+=0.5
+				if bricks >= 100 then
 					is_won = true
 					is_playing = false
 				end
@@ -291,9 +292,6 @@ function check_game_over(ball)
 	if not over_block(a, a.dx, 0) then
 		a.x += a.dx
 	else
-		cls()
-		print("game over - restart game",48,64,7)
-		sfx(1)
 		is_playing = false
 	end
 	
@@ -303,9 +301,6 @@ function check_game_over(ball)
 	if not over_block(a, 0, a.dy) then
 		a.y += a.dy
 	else
-		cls()
-		print("game over - restart game",48,64,7)
-		sfx(1)
 		is_playng = false
 	end
 end
@@ -319,11 +314,13 @@ function control_player(pl)
 end
 
 function _update()
-	control_player(pl)
-	foreach(actor, move_actor)
-	move_ball(ball)
-	check_game_over()
-		
+	if not intro_screen then
+		control_player(pl)
+		foreach(actor, move_actor)
+		move_ball(ball)
+		check_game_over()
+	end
+			
 end
 
 function draw_actor(a)
@@ -334,16 +331,23 @@ end
 
 function _draw()
 	cls()
-	is_playing=true
 	
-	if is_playing then
+	if intro_screen then
+		print("weclome to brick wrecker")
+		print("to win you have to break all bricks under 200 hits")
+		print("enjoy.")
+		
+		print("press ⬅️ to start")
+		if btn(⬅️) then
+			intro_screen = false
+		end	
+	elseif is_playing and intro_screen==false then
 		map()
 		foreach(actor,draw_actor)
-	elseif is_won==true and is_playing == false then
+	elseif is_won==true and is_playing==false and intro_screen==false then
 		print("you won you cheeky bastard, good job ◆", 20, 64, 7)
-	
-	--else
-		--print("game-over. restart game",20,64,7)
+	elseif is_playing == false and is_won == false and intro_screen==false then
+		print("game-over. restart game",20,64,7)
 	end
 	
 
